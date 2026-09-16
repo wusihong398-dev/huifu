@@ -6,7 +6,7 @@ from PyInstaller.utils.hooks import collect_data_files
 
 
 project_root = os.path.abspath(os.path.join(SPECPATH, ".."))
-entrypoint = os.path.join(project_root, "src", "huifu", "__main__.py")
+entrypoint = os.path.join(project_root, "src", "huifu", "launcher.py")
 source_root = os.path.join(project_root, "src")
 
 datas = collect_data_files("PySide6")
@@ -53,4 +53,3 @@ coll = COLLECT(
     upx_exclude=[],
     name="HuifuAI",
 )
-

@@ -33,6 +33,9 @@ jobs:
       - name: Build Windows application
         run: pyinstaller --noconfirm --clean build/huifu.spec
 
+      - name: Smoke test packaged application
+        run: dist\HuifuAI\HuifuAI.exe --self-test
+
       - name: Create archive
         shell: pwsh
         run: Compress-Archive -Path dist\HuifuAI\* -DestinationPath HuifuAI-${{ github.ref_name }}-windows-x64.zip
@@ -44,4 +47,3 @@ jobs:
           path: HuifuAI-${{ github.ref_name }}-windows-x64.zip
           if-no-files-found: error
           retention-days: 30
-

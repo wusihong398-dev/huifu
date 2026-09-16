@@ -16,6 +16,7 @@
 - ADB 设备发现
 - 四个平台统一适配器接口
 - GitHub Actions Windows 自动测试和打包
+- 打包后运行 `HuifuAI.exe --self-test`，启动入口或数据库初始化失败时禁止上传产物
 
 ## 已完成
 
@@ -64,4 +65,3 @@ pytest
 python -m pip install -e ".[build]"
 pyinstaller --noconfirm --clean build/huifu.spec
 ```
-
