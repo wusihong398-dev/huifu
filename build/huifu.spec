@@ -1,12 +1,19 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import os
+
 from PyInstaller.utils.hooks import collect_data_files
+
+
+project_root = os.path.abspath(os.path.join(SPECPATH, ".."))
+entrypoint = os.path.join(project_root, "src", "huifu", "__main__.py")
+source_root = os.path.join(project_root, "src")
 
 datas = collect_data_files("PySide6")
 
 a = Analysis(
-    ["src/huifu/__main__.py"],
-    pathex=["src"],
+    [entrypoint],
+    pathex=[source_root],
     binaries=[],
     datas=datas,
     hiddenimports=[],
