@@ -5,7 +5,7 @@ import tempfile
 from pathlib import Path
 
 
-def _self_test() -> int:
+def _self_test(*, require_adb: bool = False) -> int:
     """Run a non-GUI startup check for packaged Windows builds."""
     from huifu.database import Database
 
@@ -17,12 +17,17 @@ def _self_test() -> int:
         counts = database.dashboard_counts()
         if any(counts.values()):
             return 1
+    if require_adb:
+        from huifu.devices import AdbService
+
+        if not AdbService().is_available():
+            return 2
     return 0
 
 
 def main() -> int:
     if "--self-test" in sys.argv:
-        return _self_test()
+        return _self_test(require_adb="--require-adb" in sys.argv)
 
     # Keep this absolute import so the frozen entry point always has a package.
     from huifu.app import main as application_main
@@ -32,4 +37,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

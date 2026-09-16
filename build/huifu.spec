@@ -11,6 +11,16 @@ source_root = os.path.join(project_root, "src")
 
 datas = collect_data_files("PySide6")
 
+# GitHub Actions downloads the official Android Platform Tools into vendor/.
+# PyInstaller places them in _internal/platform-tools for the onedir build.
+platform_tools = os.path.join(project_root, "vendor", "platform-tools")
+if os.path.isdir(platform_tools):
+    for current_dir, _directories, filenames in os.walk(platform_tools):
+        relative_dir = os.path.relpath(current_dir, platform_tools)
+        destination = "platform-tools" if relative_dir == "." else os.path.join("platform-tools", relative_dir)
+        for filename in filenames:
+            datas.append((os.path.join(current_dir, filename), destination))
+
 a = Analysis(
     [entrypoint],
     pathex=[source_root],

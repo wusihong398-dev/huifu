@@ -30,11 +30,23 @@ jobs:
       - name: Run tests
         run: pytest -q
 
+      - name: Download official Android Platform Tools
+        shell: pwsh
+        run: |
+          Invoke-WebRequest `
+            -Uri "https://dl.google.com/android/repository/platform-tools-latest-windows.zip" `
+            -OutFile "platform-tools-windows.zip"
+          New-Item -ItemType Directory -Force -Path "vendor" | Out-Null
+          Expand-Archive -Path "platform-tools-windows.zip" -DestinationPath "vendor" -Force
+          if (-not (Test-Path "vendor\platform-tools\adb.exe")) {
+            throw "Android Platform Tools download does not contain adb.exe"
+          }
+
       - name: Build Windows application
         run: pyinstaller --noconfirm --clean build/huifu.spec
 
       - name: Smoke test packaged application
-        run: dist\HuifuAI\HuifuAI.exe --self-test
+        run: dist\HuifuAI\HuifuAI.exe --self-test --require-adb
 
       - name: Create archive
         shell: pwsh

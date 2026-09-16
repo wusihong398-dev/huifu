@@ -3,7 +3,7 @@ from __future__ import annotations
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Iterator
+from typing import Iterator, Mapping, Sequence
 
 
 SCHEMA_VERSION = 1
@@ -278,3 +278,37 @@ class Database:
                 for key, sql in queries.items()
             }
 
+    def sync_devices(self, devices: Sequence[Mapping[str, str]]) -> None:
+        """Persist the latest ADB snapshot without deleting user device records."""
+        with self.session() as connection:
+            connection.execute(
+                "UPDATE devices SET status = 'offline', updated_at = CURRENT_TIMESTAMP"
+            )
+            for device in devices:
+                serial = device.get("serial", "").strip()
+                if not serial:
+                    continue
+                connection.execute(
+                    """
+                    INSERT INTO devices(serial, model, android_version, status, last_seen_at)
+                    VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+                    ON CONFLICT(serial) DO UPDATE SET
+                        model = CASE
+                            WHEN excluded.model <> '' THEN excluded.model
+                            ELSE devices.model
+                        END,
+                        android_version = CASE
+                            WHEN excluded.android_version <> '' THEN excluded.android_version
+                            ELSE devices.android_version
+                        END,
+                        status = excluded.status,
+                        last_seen_at = CURRENT_TIMESTAMP,
+                        updated_at = CURRENT_TIMESTAMP
+                    """,
+                    (
+                        serial,
+                        device.get("model", ""),
+                        device.get("android_version", ""),
+                        device.get("status", "offline"),
+                    ),
+                )

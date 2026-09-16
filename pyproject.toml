@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "huifu-ai"
-version = "0.1.0.dev0"
+version = "0.1.1.dev0"
 description = "本地多平台 AI 互动助手"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -29,4 +29,3 @@ where = ["src"]
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
-

@@ -6,21 +6,23 @@
 
 ## 当前版本
 
-`0.1.0-dev`
+`0.1.1-dev`
 
 ## 当前架构
 
 - PySide6 原生桌面界面
 - SQLite 本地数据库
 - `%LOCALAPPDATA%\HuifuAI` 用户数据目录
-- ADB 设备发现
+- 安装包内置官方 Android Platform Tools，并优先使用内置ADB
+- ADB 设备发现、授权状态说明、设备记录持久化
+- 选中设备连接测试、安卓版本读取和手机截图验证
 - 四个平台统一适配器接口
 - GitHub Actions Windows 自动测试和打包
 - 打包后运行 `HuifuAI.exe --self-test`，启动入口或数据库初始化失败时禁止上传产物
 
 ## 已完成
 
-- 主界面、首页统计、设备检测、数据库备份入口
+- 主界面、首页统计、设备检测、设备连接测试、手机截图、数据库备份入口
 - 第一版数据库结构和迁移
 - 抖音、小红书、快手、哔哩哔哩插件注册表
 - 文字、图片、语音、文字+图片回复能力模型
@@ -32,7 +34,6 @@
 - AI供应商配置页面和真实生成
 - 业务画像、关键词和任务页面CRUD
 - 图片模板和TTS语音
-- ADB随安装包分发
 - 安装程序和在线升级
 
 ## 不能破坏的规则
@@ -48,7 +49,7 @@
 
 1. 完成AI配置和业务画像CRUD。
 2. 完成关键词导入及任务向导。
-3. 接入ADB屏幕截图和UI结构采集。
+3. 接入ADB的UI结构采集。
 4. 使用测试账号验证抖音搜索页面。
 5. 实现抖音候选作品采集，不执行发布。
 
@@ -65,3 +66,6 @@ pytest
 python -m pip install -e ".[build]"
 pyinstaller --noconfirm --clean build/huifu.spec
 ```
+
+发布构建前需将 Windows Platform Tools 解压到 `vendor/platform-tools`；GitHub Actions
+会自动下载并在打包后执行 `HuifuAI.exe --self-test --require-adb`，内置ADB缺失时构建失败。
