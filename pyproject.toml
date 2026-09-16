@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "huifu-ai"
+version = "0.1.0.dev0"
+description = "本地多平台 AI 互动助手"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "PySide6>=6.8,<7",
+  "httpx>=0.28,<1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3,<9"]
+build = ["pyinstaller>=6.11,<7"]
+
+[project.scripts]
+huifu-ai = "huifu.app:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
